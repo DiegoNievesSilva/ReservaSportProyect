@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin - ReservaSport</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+      padding: 1rem 2rem;
+    }
+
+    .brand {
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: #4338ca;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brand::before {
+      content: "⚡";
+      font-size: 1.3rem;
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .admin-login-card {
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(15px);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 25px 40px -10px rgba(0,0,0,0.25);
+      width: 100%;
+      max-width: 420px;
+      animation: fadeUp 0.8s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Fondo decorativo */
+    .admin-login-card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 180deg at 50% 50%, #6366f1, #a855f7, #6366f1);
+      animation: spinBg 8s linear infinite;
+      z-index: 0;
+      opacity: 0.08;
+    }
+
+    @keyframes spinBg {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .admin-login-card * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .security-icon {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 3.2rem;
+      color: #4338ca;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+    }
+
+    .admin-login-card h2 {
+      text-align: center;
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4338ca, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .admin-subtitle {
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+      font-weight: 500;
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .input-group label {
+      display: block;
+      color: #374151;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .admin-input {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 14px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    .admin-input:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.15);
+      background: white;
+      transform: scale(1.02);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+    }
+
+    .admin-btn {
+      flex: 1;
+      padding: 0.9rem 1.2rem;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+    }
+
+    .admin-btn-primary {
+      background: linear-gradient(135deg, #4338ca, #7c3aed);
+      color: #fff;
+      box-shadow: 0 4px 8px rgba(99,102,241,0.25);
+    }
+
+    .admin-btn-primary:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 16px rgba(99,102,241,0.3);
+    }
+
+    .admin-btn-outline {
+      background: transparent;
+      color: #4338ca;
+      border: 2px solid #4338ca;
+    }
+
+    .admin-btn-outline:hover {
+      background: #4338ca;
+      color: #fff;
+      transform: scale(1.02);
+    }
+
+    .error-message {
+      margin-top: 1rem;
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      color: #b91c1c;
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .error-message.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 1rem; }
+      .admin-login-card { padding: 2rem 1.2rem; }
+      .button-group { flex-direction: column; }
+      .admin-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="brand">ReservaSport - Admin</div>
+  </header>
+
+  <main class="container">
+    <section class="admin-login-card">
+      <div class="security-icon">🔐</div>
+      <h2>Panel de Administrador</h2>
+      <p class="admin-subtitle">Acceso exclusivo para administradores</p>
+
+      <div class="input-group">
+        <label for="pwd">Contraseña de Administrador</label>
+        <input 
+          id="pwd" 
+          type="password" 
+          class="admin-input" 
+          placeholder="Ingresa tu contraseña de admin" 
+          autocomplete="current-password">
+      </div>
+
+      <div class="button-group">
+        <button id="loginBtn" class="admin-btn admin-btn-primary">
+          <span class="btn-text">Ingresar</span>
+        </button>
+        <button id="backBtn" class="admin-btn admin-btn-outline">
+          Volver al inicio
+        </button>
+      </div>
+
+      <div id="msg" class="error-message"></div>
+    </section>
+  </main>
+
+<script>
+const loginBtn = document.getElementById('loginBtn');
+const backBtn = document.getElementById('backBtn');
+const msg = document.getElementById('msg');
+const pwdInput = document.getElementById('pwd');
+const btnText = loginBtn.querySelector('.btn-text');
+
+function showError(message) {
+  msg.textContent = message;
+  msg.classList.add('show');
+  setTimeout(() => msg.classList.remove('show'), 4000);
+}
+
+function setLoading(isLoading) {
+  if (isLoading) {
+    loginBtn.disabled = true;
+    btnText.innerHTML = '<span class="loading-spinner"></span>Verificando...';
+  } else {
+    loginBtn.disabled = false;
+    btnText.textContent = 'Ingresar';
+  }
+}
+
+pwdInput.addEventListener('keypress', e => {
+  if (e.key === 'Enter' && !loginBtn.disabled) loginBtn.click();
+});
+
+pwdInput.addEventListener('input', () => msg.classList.remove('show'));
+
+loginBtn.addEventListener('click', async () => {
+  const pwd = pwdInput.value.trim();
+  if (!pwd) {
+    showError('Por favor, escribe la contraseña.');
+    pwdInput.focus();
+    return;
+  }
+  setLoading(true);
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pwd })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setLoading(false);
+      showError(data.error || 'Credenciales incorrectas');
+      pwdInput.value = '';
+      pwdInput.focus();
+      return;
+    }
+    localStorage.setItem('adminToken', data.token);
+    btnText.innerHTML = '✓ Acceso autorizado';
+    setTimeout(() => location.href = '/admin_dashboard.html', 500);
+  } catch (e) {
+    setLoading(false);
+    showError('Error de conexión. Verifica tu internet.');
+  }
+});
+
+backBtn.addEventListener('click', () => location.href = '/');
+pwdInput.focus();
+</script>
+</body>
+</html>

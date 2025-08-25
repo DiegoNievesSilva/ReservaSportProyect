@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dashboard - ReservaSport</title>
+  <style>
+    body {
+      background: #f3f4f6;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      color: #111827;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #4f46e5;
+    }
+
+    .nav a {
+      text-decoration: none;
+      font-weight: 600;
+      color: #fff;
+      background: #ef4444;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+    .nav a:hover {
+      background: #dc2626;
+    }
+
+    /* Container principal */
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Cards métricas */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .metric-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 2rem;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .metric-card h3 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0;
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .metric-card span {
+      margin-top: .4rem;
+      color: #6b7280;
+      font-weight: 500;
+      display: block;
+    }
+
+    /* Sección gestión reservas */
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 2rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    }
+
+    .card h2 {
+      margin: 0 0 1.5rem 0;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #4f46e5;
+    }
+
+    label {
+      font-weight: 600;
+      margin-right: .5rem;
+    }
+
+    input[type="date"], select {
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+    input[type="date"]:focus, select:focus {
+      border-color: #7c3aed;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.2);
+    }
+
+    .btn {
+      padding: 0.55rem 1.3rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+    .btn.outline {
+      background: transparent;
+      color: #4f46e5;
+      border: 2px solid #4f46e5;
+    }
+    .btn.outline:hover {
+      background: #4f46e5;
+      color: #fff;
+    }
+
+    /* Tabla */
+    table {
+      width: 100%;
+      margin-top: 1rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    thead {
+      background: #f9fafb;
+      color: #374151;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    tbody tr:hover {
+      background: #f3f4f6;
+    }
+
+    @media(max-width:768px) {
+      .metrics { grid-template-columns: 1fr; }
+      table, thead, tbody, th, td, tr { display: block; }
+      thead { display: none; }
+      tr { margin-bottom: 1rem; border-bottom: 1px solid #e5e7eb; }
+      td { display: flex; justify-content: space-between; padding: 0.6rem; }
+      td::before { content: attr(data-label); font-weight: 600; color: #374151; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="brand">ReservaSport - Admin</div>
+    <nav class="nav"><a id="logout" href="#">Cerrar Sesión</a></nav>
+  </header>
+
+  <main class="container">
+    <!-- Métricas -->
+    <section class="metrics">
+      <div class="metric-card">
+        <h3 id="totalReservas">0</h3>
+        <span>Total Reservas</span>
+      </div>
+      <div class="metric-card">
+        <h3 id="reservasHoy">0</h3>
+        <span>Reservas Hoy</span>
+      </div>
+      <div class="metric-card">
+        <h3 id="canchasActivas">0</h3>
+        <span>Canchas Activas</span>
+      </div>
+    </section>
+
+    <!-- Gestión de reservas -->
+    <section class="card">
+      <h2>Gestión de Reservas</h2>
+      <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center;">
+        <div>
+          <label>Filtrar por fecha</label>
+          <input id="filterDate" type="date" />
+        </div>
+        <div>
+          <label>Filtrar por cancha</label>
+          <select>
+            <option>Todas las canchas</option>
+          </select>
+        </div>
+        <button id="filterBtn" class="btn">Filtrar</button>
+      </div>
+
+      <table id="resTable">
+        <thead>
+          <tr>
+            <th>ID</th><th>Cancha</th><th>Fecha</th><th>Franja</th>
+            <th>Cliente</th><th>Teléfono</th><th>Creada</th><th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+<script>
+const token = localStorage.getItem('adminToken');
+if (!token) location.href='/admin_login.html';
+
+document.getElementById('logout').addEventListener('click', () => {
+  localStorage.removeItem('adminToken');
+  location.href = '/';
+});
+
+async function fetchReservations(date) {
+  const hdr = { 'Authorization': 'Bearer ' + token };
+  const qs = date ? '?date='+date : '';
+  const res = await fetch('/api/admin/reservations'+qs, { headers: hdr });
+  if (res.status===401) return location.href='/admin_login.html';
+  return res.json();
+}
+
+function renderTable(rows, courts) {
+  const tbody = document.querySelector('#resTable tbody');
+  tbody.innerHTML='';
+  rows.forEach(r => {
+    const court = courts.find(c=>c.id===r.courtId) || {nombre:'-'};
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td data-label="ID">${r.id}</td>
+      <td data-label="Cancha">${court.nombre}</td>
+      <td data-label="Fecha">${r.date}</td>
+      <td data-label="Franja">${r.slotId}</td>
+      <td data-label="Cliente">${r.clienteNombre}</td>
+      <td data-label="Teléfono">${r.clienteTelefono}</td>
+      <td data-label="Creada">${new Date(r.createdAt).toLocaleString()}</td>
+      <td data-label="Acciones"><button class="btn outline cancel" data-id="${r.id}">Cancelar</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.querySelectorAll('.cancel').forEach(b=>b.addEventListener('click', cancelReservation));
+}
+
+async function cancelReservation(e) {
+  const id = e.target.getAttribute('data-id');
+  if (!confirm('Confirmar cancelación de la reserva #' + id + '?')) return;
+  const res = await fetch('/api/admin/reservations/'+id, { method:'DELETE', headers: { 'Authorization':'Bearer '+token } });
+  if (!res.ok) return alert('Error al cancelar');
+  alert('Reserva cancelada.');
+  load();
+}
+
+async function load() {
+  const date = document.getElementById('filterDate').value;
+  const [reservations, courts] = await Promise.all([
+    fetchReservations(date),
+    fetch('/api/courts').then(r=>r.json())
+  ]);
+
+  // Renderizar tabla
+  renderTable(reservations, courts);
+
+  // ===== Actualizar métricas =====
+  document.getElementById('totalReservas').textContent = reservations.length;
+
+  // Contar reservas de hoy
+  const today = new Date().toISOString().split('T')[0]; // yyyy-mm-dd
+  const reservasHoy = reservations.filter(r => r.date === today).length;
+  document.getElementById('reservasHoy').textContent = reservasHoy;
+
+  // Canchas activas = canchas que tienen al menos una reserva
+  const canchasActivas = [...new Set(reservations.map(r => r.courtId))].length;
+  document.getElementById('canchasActivas').textContent = canchasActivas;
+}
+
+document.getElementById('filterBtn').addEventListener('click', load);
+load();
+</script>
+</body>
+</html>

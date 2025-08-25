@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReservaSport - Biblos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: #f0f4f8;
+      color: #222;
+    }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(90deg, #007bff, #0056b3);
+      color: #fff;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .header .brand { font-size: 24px; font-weight: 700; letter-spacing: 1px; }
+    .nav a { 
+      color: #fff; 
+      margin-left: 20px; 
+      text-decoration: none; 
+      font-weight: 600; 
+      transition: 0.3s; 
+    }
+    .nav a:hover { color: #ffd700; }
+    .nav a.active { text-decoration: underline; }
+
+    /* LAYOUT */
+    .container {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 20px;
+      padding: 25px;
+      max-width: 1400px;
+      margin: auto;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      background: #fff;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+    .sidebar h2 { font-size: 20px; margin-bottom: 15px; color:#111; }
+    .sidebar label { display:block; margin: 12px 0 6px; font-weight: 600; color:#000; }
+    .sidebar input, .sidebar select, .sidebar button {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      color: #000;
+      background-color: #fff;
+      transition: 0.3s;
+    }
+    .sidebar input:focus, .sidebar select:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 6px rgba(0,123,255,0.4);
+    }
+    .sidebar button {
+      background: linear-gradient(90deg, #007bff, #0056b3);
+      color: white;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    .sidebar button:hover { background: linear-gradient(90deg, #0056b3, #00408a); }
+
+    /* CONTENT */
+    .content {
+      background: #fff;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .content h1 {
+      font-size: 26px;
+      margin-bottom: 20px;
+      color: #111;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 25px; /* Aumentamos el espacio */
+    }
+
+    /* --- INICIO: ESTILOS MEJORADOS PARA LA DISPONIBILIDAD --- */
+
+    .slot-card {
+      background-color: #fff;
+      border: 2px solid #e9ecef; /* Borde base */
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 180px; /* Altura consistente */
+    }
+
+    .slot-card h3 {
+      margin: 0 0 12px 0;
+      font-size: 22px;
+      font-weight: 700;
+      color: #343a40;
+    }
+
+    .slot-status {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    /* Estilos para la tarjeta DISPONIBLE */
+    .slot-card.disponible {
+      border-color: #28a745;
+    }
+
+    .slot-card.disponible:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(40, 167, 69, 0.15);
+    }
+
+    .slot-card.disponible .slot-status {
+      color: #28a745;
+    }
+
+    .slot-card.disponible .btn-reservar {
+      background: #28a745;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+    }
+    .slot-card.disponible .btn-reservar:hover {
+        background: #218838;
+        transform: scale(1.03);
+    }
+
+    /* Estilos para la tarjeta OCUPADA */
+    .slot-card.ocupado {
+      background-color: #f8f9fa;
+      box-shadow: none;
+    }
+    .slot-card.ocupado h3,
+    .slot-card.ocupado .btn-reservar {
+      color: #6c757d;
+    }
+    
+    .slot-card.ocupado .slot-status {
+      color: #dc3545;
+    }
+
+    .slot-card.ocupado .btn-reservar {
+      background-color: #e9ecef;
+      cursor: not-allowed;
+    }
+    
+    .btn-reservar {
+      width: 100%;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.2s ease-in-out;
+    }
+    
+    /* --- FIN: ESTILOS MEJORADOS --- */
+    
+    /* MODAL */
+    .modal { 
+      position: fixed; inset:0; 
+      display:flex; justify-content:center; align-items:center; 
+      background:rgba(0,0,0,0.55); 
+      backdrop-filter: blur(4px);
+      transition: opacity 0.3s ease;
+    }
+    .modal.hidden { display: none; }
+    .modal-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 14px;
+      width: 420px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+      animation: slideDown 0.3s ease;
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-content h3 { margin-top: 0; color:#222; font-size:20px; }
+    .modal-content label { display:block; margin-top:12px; font-weight:600; }
+    .modal-content input {
+      width: 100%; padding:12px; border:1px solid #ccc; border-radius:10px; margin-top:6px;
+      transition: 0.3s;
+    }
+    .modal-content input:focus {
+      border-color:#007bff; box-shadow:0 0 6px rgba(0,123,255,0.4); outline:none;
+    }
+    .modal-actions { margin-top: 25px; display:flex; justify-content:flex-end; gap:12px; }
+    .modal-actions button {
+      padding: 12px 18px; border:none; border-radius:10px; cursor:pointer; font-weight:600;
+    }
+    .modal-actions #confirmBtn { background:#007bff; color:#fff; }
+    .modal-actions #confirmBtn:hover { background:#0056b3; }
+    .modal-actions #cancelBtn { background:#ddd; }
+    .modal-actions #cancelBtn:hover { background:#bbb; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="brand">ReservaSport</div>
+    <nav class="nav">
+      <a href="#" class="active">Reservar</a>
+      <a href="/admin_login.html">Admin</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <aside class="sidebar">
+      <h2>Filtros</h2>
+      <label for="courtSelect">Cancha</label>
+      <select id="courtSelect">
+        <option>Cancha 1</option>
+        <option>Cancha 2</option>
+        <option>Cancha 3</option>
+      </select>
+
+      <label for="dateInput">Fecha</label>
+      <input type="date" id="dateInput" />
+
+      <button id="checkBtn">Ver disponibilidad</button>
+
+      <div class="note">
+        Horario: <strong>20:00 - 23:00</strong> (3 franjas de 1 hora)
+      </div>
+    </aside>
+
+    <section class="content">
+      <h1>Disponibilidad de reservas</h1>
+      
+      <div id="availability" class="grid">
+        
+        <div class="slot-card disponible">
+          <h3>🕒 20:00 - 21:00</h3>
+          <p class="slot-status">Disponible</p>
+          <button class="btn-reservar">Reservar ahora</button>
+        </div>
+        
+        <div class="slot-card ocupado">
+          <h3>🕒 21:00 - 22:00</h3>
+          <p class="slot-status">Ocupado</p>
+          <button class="btn-reservar" disabled>No disponible</button>
+        </div>
+
+        <div class="slot-card disponible">
+            <h3>🕒 22:00 - 23:00</h3>
+            <p class="slot-status">Disponible</p>
+            <button class="btn-reservar">Reservar ahora</button>
+        </div>
+        
+      </div>
+      <div id="feedback" class="feedback"></div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <h3 id="modalTitle">Confirmar reserva</h3>
+      <label>Nombre del cliente</label>
+      <input id="clienteNombre" placeholder="Tu nombre completo" />
+      <label>Teléfono</label>
+      <input id="clienteTelefono" placeholder="Tu teléfono" />
+      <div class="modal-actions">
+        <button id="confirmBtn">Confirmar</button>
+        <button id="cancelBtn">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
